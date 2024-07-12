@@ -119,6 +119,9 @@ load_raw <- function(raw_data_dir, n_max) {
     by = "HA_COUNTY"
   )
 
+  print('nrow(data)')
+  print(nrow(data))
+
   loading_problems <- c(
     violation_codes$loading_problems,
     county_codes$loading_problems,
@@ -134,6 +137,7 @@ load_raw <- function(raw_data_dir, n_max) {
 
 
 clean <- function(d, helpers) {
+  print('in clean function')
   tr_race <- c(
     A = "asian/pacific islander",
     B = "black",
@@ -159,6 +163,7 @@ clean <- function(d, helpers) {
     pieces <- str_split(x, " ")
     sapply(pieces, function(y) y[length(y)])
   }
+  print('checkpoint01')
 
   # NOTE: Dataset with race statistics for last names to help correct race, in
   # particular, hispanic not being correctly recorded. Source:
@@ -177,6 +182,7 @@ clean <- function(d, helpers) {
     normalized_last_name = str_to_lower(name),
     pH = coalesce(parse_number(pcthispanic) / 100, 0)
   )
+  print('checkpoint02')
 
   pre_dedup <- rename(
     d$data,
@@ -262,6 +268,9 @@ clean <- function(d, helpers) {
       subject_race_recorded
     )
   )
+  print('checkpoint03')
+  print('nrow(pre_dedup)')
+  print(nrow(pre_dedup))
 
   duplicates <- select(
     pre_dedup,
@@ -275,10 +284,32 @@ clean <- function(d, helpers) {
     subject_last_name
   ) %>%
   duplicated()
+  print('checkpoint 04')
+  print('class(duplicates)')
+  print(class(duplicates))
+  # print('nrow(duplicates)')
+  # print(duplicates)
 
-  cleaned <- filter(
-    pre_dedup,
-    !duplicates
-  ) %>%
-  standardize(d$metadata)
+  print('nrow(pre_dedup)')
+  print(nrow(pre_dedup))
+
+  cleaned <- pre_dedup[!duplicates, ]
+  # cleaned <- filter(
+  #   pre_dedup,
+  #   !duplicates
+  # ) %>%
+
+  print('checkpoint 05')
+  print('clean')
+  print('nrow(cleaned)')
+  print(nrow(cleaned))
+  # print(cleaned)
+  print(d$metadata)
+  standardize(cleaned, d$metadata)
+  print('nrow(cleaned)')
+  print(nrow(cleaned))
+  write.csv(cleaned, '/share/pierson/non_public_open_policing_data/nora_work/tx_processed2.csv', row.names = FALSE)
+  print('nrow(pre_dedup)')
+  print(nrow(pre_dedup))
+  print('finished')
 }

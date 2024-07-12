@@ -18,7 +18,7 @@ standardize <- function(data, metadata) {
       metadata = list()
     ) %>%
     add_calculated_columns %>%
-    select_only_schema_cols %>%
+    # select_only_schema_cols %>%
     enforce_types %>%
     correct_predicates %>%
     sanitize

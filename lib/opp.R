@@ -238,7 +238,7 @@ opp_sensitive_raw_data <- function() {
 
 opp_bunching_report <- function() {
   print("building report...")
-  output_dir <- dir_create(here::here("reports"))
+  output_dir <- dir.create(here::here("reports"))
   render(
     "bunching_report.Rmd",
     "pdf_document",
@@ -248,7 +248,7 @@ opp_bunching_report <- function() {
 
 
 opp_calculated_features_path <- function(state, city = "statewide") {
-  data_dir <- opp_data_dir(state, city)
+  data_dir <- "~/opp/lib/"# opp_data_dir(state, city)
   file.path(data_dir, "calculated_features")
 }
 
@@ -298,7 +298,7 @@ opp_clean <- function(d, state, city = "statewide") {
 opp_clean_data_path <- function(state, city = "statewide", csv_path=FALSE) {
   # NOTE: all clean data is stored and loaded in RDS format to
   # maintain data types
-  clean_data_dir <- dir_create(path(opp_data_dir(state, city), "clean"))
+  clean_data_dir <- dir.create(path(opp_data_dir(state, city), "clean"))
   if (csv_path) {
     path(clean_data_dir, str_c(normalize_city(city), ".csv"))
   } else {
@@ -326,7 +326,7 @@ opp_county_population <- function(state, county) {
 
 opp_coverage <- function() {
   print("generating coverage report...")
-  dir_create(here::here("reports"))
+  dir.create(here::here("reports"))
   output_path <- here::here("reports", "coverage.pdf")
   render(
     "coverage.Rmd",
@@ -356,7 +356,7 @@ opp_coverage_map <- function() {
 
   state_polynames <- maps::map(database = "state")$names
 
-  dir_create(here::here("results"))
+  dir.create(here::here("results"))
   out_fn <- here::here("results", "coverage_map.pdf")
   pdf(out_fn, width = 16, height = 9)
   maps::map(
@@ -381,7 +381,7 @@ opp_coverage_map <- function() {
 
 
 opp_data_dir <- function(state, city = "statewide") {
-  dir_create(here::here(
+  dir.create(here::here(
     "data",
     "states",
     normalize_state(state),
@@ -784,7 +784,7 @@ opp_locations_used_in_analyses <- function() {
 
 
 opp_package_for_archive <- function(dir = "/share/data/opp/sdr_v4") {
-  dir_create(dir)
+  dir.create(dir)
   opp_apply(
     function(state, city) {
       opp_package_location_for_archive(state, city, dir)
@@ -794,7 +794,7 @@ opp_package_for_archive <- function(dir = "/share/data/opp/sdr_v4") {
 
 
 opp_package_location_for_archive <- function(state, city, dir) {
-  dir_create(dir)
+  dir.create(dir)
   fn <- for_filename(state, city)
   base <- file.path(dir, fn)
   dt <- str_c("_", str_replace_all(Sys.Date(), "-", "_"))
@@ -818,7 +818,7 @@ opp_package_location_for_archive <- function(state, city, dir) {
 opp_plot <- function(state, city = "Statewide") {
   source(here::here("lib", "plot.R"), local = TRUE)
   output_dir = here::here("plots")
-  dir_create(output_dir)
+  dir.create(output_dir)
   plot_cols(
     opp_load_clean_data(state, city),
     file.path(output_dir, pdf_filename(state, city))
@@ -854,7 +854,7 @@ opp_plot_distribution <- function(
     ylab("year_month") +
     xlab(subgq_name) +
     scale_fill_brewer(palette="Set1")
-  output_dir <- dir_create(here::here("plots"))
+  output_dir <- dir.create(here::here("plots"))
   fname <- str_c("distribution_", pdf_filename(state, city))
   width <- select(tbl, !!subgq) %>% distinct %>% count
   height <- tbl %>%
@@ -1022,7 +1022,7 @@ opp_relative_violation_rates <- function() {
 
 opp_report <- function(state, city = "statewide") {
   print("building report...")
-  dir_create(here::here("reports"))
+  dir.create(here::here("reports"))
   output_path <- here::here("reports", pdf_filename(state, city))
   render(
     "report.Rmd",
@@ -1042,7 +1042,7 @@ opp_report_all <- function() {
 
 
 opp_results_path <- function(fname) {
-  dir_create(here::here("results"))
+  dir.create(here::here("results"))
   here::here("results", fname)
 }
 
@@ -1117,7 +1117,7 @@ opp_save <- function(d, state, city = "statewide") {
 
 opp_set_download_directory <- function(data_dir) {
   repo_data_dir <- here::here("data")
-  dir_create(data_dir)
+  dir.create(data_dir)
   if (dir_exists(repo_data_dir))
     file.remove(repo_data_dir)
   file.symlink(data_dir, repo_data_dir)
